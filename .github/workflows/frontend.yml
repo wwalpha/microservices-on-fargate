@@ -10,13 +10,13 @@ on:
 
 env:
   ECR_REPOSITORY: onecloud-fargate
-  TAKS_DEFINITION_FILE: task-def/frontend.json
+  TAKS_DEFINITION_FILE: ../task-def/frontend.json
   SERVICE_NAME: frontend
   CLUSTER_NAME: onecloud-fargate-microservice
 
 jobs:
   build:
-    name: maven build and create docker image
+    name: build and create docker image
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +50,7 @@ jobs:
 
       # docker build and push
       - name: Build, tag, and push image to Amazon ECR
+        working-directory: frontend
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
