@@ -1,0 +1,76 @@
+name: Build and Deploy to ECS Frontend Service
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - backend/public/**
+      - .github/workflows/backend_public.yml
+
+env:
+  ECR_REPOSITORY: onecloud-fargate
+  TAKS_DEFINITION_FILE: ../task-def/backend.json
+  SERVICE_NAME: backend-public
+  CLUSTER_NAME: onecloud-fargate-microservice
+
+jobs:
+  build:
+    name: build and create docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      # AWS Credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      # ECR Login
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # Install nodejs
+      - uses: actions/setup-node@master
+        with:
+          node-version: 14.x
+
+      # Install libraries and build
+      - name: Install and build
+        working-directory: backend/public
+        run: |
+          yarn install
+          yarn build
+
+      # docker build and push
+      - name: Build, tag, and push image to Amazon ECR
+        working-directory: backend/public
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG"
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: render-web-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.TAKS_DEFINITION_FILE }}
+          container-name: ${{ env.SERVICE_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+          service: ${{ env.SERVICE_NAME }}
+          cluster: ${{ env.CLUSTER_NAME }}
+          wait-for-service-stability: true
