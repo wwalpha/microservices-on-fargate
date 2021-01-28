@@ -24,7 +24,7 @@ resource "aws_ecs_cluster" "fargate" {
 # ECS Service - Frontend Task Definition
 # ----------------------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "frontend" {
-  family                = aws_ecs_cluster.fargate.name
+  family                = "onecloud-fargate-frontend"
   container_definitions = file("taskdef/frontend.json")
   task_role_arn         = aws_iam_role.ecs_task_exec.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
@@ -51,14 +51,14 @@ resource "aws_ecs_service" "frontend" {
 
   network_configuration {
     assign_public_ip = false
-    subnets          = var.vpc_subnet_ids
+    subnets          = var.private_subnet_ids
     security_groups  = var.vpc_security_groups
   }
   scheduling_strategy = "REPLICA"
 
   load_balancer {
     target_group_arn = aws_lb_target_group.frontend.arn
-    container_name   = "onecloud-fargate-microservice"
+    container_name   = "onecloud-fargate-frontend"
     container_port   = 80
   }
 

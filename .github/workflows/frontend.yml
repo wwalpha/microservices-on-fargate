@@ -57,6 +57,8 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG"
+
+      # update task definition
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1

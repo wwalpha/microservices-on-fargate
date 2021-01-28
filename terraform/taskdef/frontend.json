@@ -1,7 +1,7 @@
 [
   {
-    "name": "onecloud-fargate-microservice",
-    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate:16e5134e4e003f0b47ddb9b84d8f4a5372e72bac",
+    "name": "onecloud-fargate-frontend",
+    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate:frontend_16e5134e4e003f0b47ddb9b84d8f4a5372e72bac",
     "cpu": 10,
     "memory": 512,
     "essential": true,
