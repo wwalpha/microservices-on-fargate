@@ -3,8 +3,8 @@ name: Build and Deploy to ECS Frontend Service
 on:
   push:
     paths:
-      - 'backend/public/**'
-      - '.github/workflows/backend_public.yml'
+      - backend/public/**
+      - .github/workflows/backend_public.yml
 
 env:
   ECR_REPOSITORY: onecloud-fargate
@@ -39,12 +39,10 @@ jobs:
         with:
           node-version: 14.x
 
-      # Install libraries and build
+      # Install libraries
       - name: Install and build
         working-directory: backend/public
-        run: |
-          yarn install
-          yarn build
+        run: yarn install
 
       # docker build and push
       - name: Build, tag, and push image to Amazon ECR
