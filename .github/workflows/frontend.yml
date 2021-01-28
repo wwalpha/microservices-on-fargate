@@ -64,7 +64,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ env.TAKS_DEFINITION_FILE }}
-          container-name: ${{ env.SERVICE_NAME }}
+          container-name: onecloud-fargate-frontend
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
