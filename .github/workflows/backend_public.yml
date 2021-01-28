@@ -5,8 +5,8 @@ on:
     branches:
       - master
     paths:
-      - backend/public/**
-      - .github/workflows/backend_public.yml
+      - 'backend/public/**'
+      - '.github/workflows/backend_public.yml'
 
 env:
   ECR_REPOSITORY: onecloud-fargate
