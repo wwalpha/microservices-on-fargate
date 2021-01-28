@@ -2,8 +2,6 @@ name: Build and Deploy to ECS Frontend Service
 
 on:
   push:
-    branches:
-      - master
     paths:
       - 'backend/public/**'
       - '.github/workflows/backend_public.yml'
