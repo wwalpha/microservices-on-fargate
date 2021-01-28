@@ -1,8 +1,30 @@
 # ----------------------------------------------------------------------------------------------
-# ECR
+# ECR - Frontend
 # ----------------------------------------------------------------------------------------------
-resource "aws_ecr_repository" "fargate" {
-  name                 = "onecloud-fargate"
+resource "aws_ecr_repository" "frontend" {
+  name                 = "onecloud-fargate-frontend"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+# ----------------------------------------------------------------------------------------------
+# ECR - Backend Public
+# ----------------------------------------------------------------------------------------------
+resource "aws_ecr_repository" "backend_public" {
+  name                 = "onecloud-fargate-backend-public"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+# ----------------------------------------------------------------------------------------------
+# ECR - Backend Private
+# ----------------------------------------------------------------------------------------------
+resource "aws_ecr_repository" "backend_private" {
+  name                 = "onecloud-fargate-backend-private"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = true
