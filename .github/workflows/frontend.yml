@@ -8,7 +8,7 @@ on:
 
 env:
   ECR_REPOSITORY: onecloud-fargate
-  TAKS_DEFINITION_FILE: ../task-def/frontend.json
+  TAKS_DEFINITION_FILE: task-def/frontend.json
   SERVICE_NAME: frontend
   CLUSTER_NAME: onecloud-fargate-microservice
 
