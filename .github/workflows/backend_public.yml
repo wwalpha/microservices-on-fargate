@@ -10,13 +10,12 @@ on:
 env:
   ECR_REPOSITORY: onecloud-fargate-backend-public
   TAKS_DEFINITION_FILE: task-def/backend_public.json
-  SERVICE_NAME: backend-public
+  SERVICE_NAME: backend_public
   CLUSTER_NAME: onecloud-fargate-microservice
 
 jobs:
   build:
-    name: Build and Deploy to ECS Backend_Public Service
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
