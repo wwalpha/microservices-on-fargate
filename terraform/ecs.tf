@@ -64,7 +64,7 @@ resource "aws_ecs_task_definition" "frontend" {
 resource "aws_ecs_service" "frontend" {
   name                               = "frontend"
   cluster                            = aws_ecs_cluster.fargate.id
-  desired_count                      = 2
+  desired_count                      = 1
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
   task_definition                    = aws_ecs_task_definition.frontend.arn
@@ -83,41 +83,127 @@ resource "aws_ecs_service" "frontend" {
     container_name   = "onecloud-fargate-frontend"
     container_port   = 80
   }
+}
+
+# ----------------------------------------------------------------------------------------------
+# ECS Service - Backend Public Task Definition
+# ----------------------------------------------------------------------------------------------
+resource "aws_ecs_task_definition" "backend_public" {
+  family                = "onecloud-fargate-backend-public"
+  container_definitions = file("taskdef/backend_public.json")
+  task_role_arn         = aws_iam_role.ecs_task_exec.arn
+  execution_role_arn    = aws_iam_role.ecs_task_exec.arn
+  network_mode          = "awsvpc"
+  requires_compatibilities = [
+    "FARGATE"
+  ]
+  cpu    = "512"
+  memory = "1024"
+}
+
+# ----------------------------------------------------------------------------------------------
+# ECS Service - Backend Public
+# ----------------------------------------------------------------------------------------------
+resource "aws_ecs_service" "backend_public" {
+  name                               = "backend_public"
+  cluster                            = aws_ecs_cluster.fargate.id
+  desired_count                      = 1
+  launch_type                        = "FARGATE"
+  platform_version                   = "1.4.0"
+  task_definition                    = aws_ecs_task_definition.backend_public.arn
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+
+  network_configuration {
+    assign_public_ip = false
+    subnets          = var.private_subnet_ids
+    security_groups  = var.vpc_security_groups
+  }
+  scheduling_strategy = "REPLICA"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.backend_public.arn
+    container_name   = "onecloud-fargate-backend-public"
+    container_port   = 8080
+  }
+}
+
+# ----------------------------------------------------------------------------------------------
+# ECS Service - Backend Private Task Definition
+# ----------------------------------------------------------------------------------------------
+resource "aws_ecs_task_definition" "backend_private" {
+  family                = "onecloud-fargate-backend-private"
+  container_definitions = file("taskdef/backend_private.json")
+  task_role_arn         = aws_iam_role.ecs_task_exec.arn
+  execution_role_arn    = aws_iam_role.ecs_task_exec.arn
+  network_mode          = "awsvpc"
+  requires_compatibilities = [
+    "FARGATE"
+  ]
+  cpu    = "512"
+  memory = "1024"
+}
+
+# ----------------------------------------------------------------------------------------------
+# ECS Service - Backend Private
+# ----------------------------------------------------------------------------------------------
+resource "aws_ecs_service" "backend_private" {
+  name                               = "backend_private"
+  cluster                            = aws_ecs_cluster.fargate.id
+  desired_count                      = 2
+  launch_type                        = "FARGATE"
+  platform_version                   = "1.4.0"
+  task_definition                    = aws_ecs_task_definition.backend_private.arn
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+
+  network_configuration {
+    assign_public_ip = false
+    subnets          = var.private_subnet_ids
+    security_groups  = var.vpc_security_groups
+  }
+  scheduling_strategy = "REPLICA"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.backend_private.arn
+    container_name   = "onecloud-fargate-backend-private"
+    container_port   = 8090
+  }
 
   lifecycle {
     ignore_changes = [desired_count]
   }
 }
 
-# # ----------------------------------------------------------------------------------------------
-# # Application AutoScaling ScalableTarget - ECS
-# # ----------------------------------------------------------------------------------------------
-# resource "aws_appautoscaling_target" "frontend_target" {
-#   max_capacity       = 4
-#   min_capacity       = 1
-#   resource_id        = "service/${aws_ecs_cluster.example.name}/${aws_ecs_service.example.name}"
-#   scalable_dimension = "ecs:service:DesiredCount"
-#   service_namespace  = "ecs"
-# }
+# ----------------------------------------------------------------------------------------------
+# Application AutoScaling ScalableTarget - ECS
+# ----------------------------------------------------------------------------------------------
+resource "aws_appautoscaling_target" "backend_private" {
+  max_capacity       = 4
+  min_capacity       = 1
+  resource_id        = "service/${aws_ecs_cluster.fargate.name}/${aws_ecs_service.backend_private.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
 
-# # ----------------------------------------------------------------------------------------------
-# # Application AutoScaling Policy - ECS
-# # ----------------------------------------------------------------------------------------------
-# resource "aws_appautoscaling_policy" "ecs_policy" {
-#   name               = "scale-down"
-#   policy_type        = "StepScaling"
-#   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
-#   scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
-#   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+# ----------------------------------------------------------------------------------------------
+# Application AutoScaling Policy - ECS
+# ----------------------------------------------------------------------------------------------
+resource "aws_appautoscaling_policy" "ecs_policy" {
+  name               = "ScaleOut_CPU_80"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.backend_private.resource_id
+  scalable_dimension = aws_appautoscaling_target.backend_private.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.backend_private.service_namespace
 
-#   step_scaling_policy_configuration {
-#     adjustment_type         = "ChangeInCapacity"
-#     cooldown                = 60
-#     metric_aggregation_type = "Maximum"
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 300
+    metric_aggregation_type = "Maximum"
 
-#     step_adjustment {
-#       metric_interval_upper_bound = 0
-#       scaling_adjustment          = -1
-#     }
-#   }
-# }
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = -1
+    }
+  }
+}

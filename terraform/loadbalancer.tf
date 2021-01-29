@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------------------------
-# Application Load Balancer - Frontend
+# Application Load Balancer - Public
 # ----------------------------------------------------------------------------------------------
-resource "aws_lb" "frontend" {
-  name               = "onecloud-fargate-alb"
+resource "aws_lb" "public" {
+  name               = "onecloud-fargate-public"
   internal           = false
   load_balancer_type = "application"
   security_groups    = var.vpc_security_groups
@@ -32,7 +32,7 @@ resource "aws_lb_target_group" "frontend" {
 # Load Balancer Listener - Frontend
 # ----------------------------------------------------------------------------------------------
 resource "aws_lb_listener" "frontend" {
-  load_balancer_arn = aws_lb.frontend.arn
+  load_balancer_arn = aws_lb.public.arn
   port              = "80"
   protocol          = "HTTP"
   # ssl_policy        = "ELBSecurityPolicy-2016-08"
@@ -56,6 +56,58 @@ resource "aws_lb_target_group" "backend_public" {
 }
 
 # ----------------------------------------------------------------------------------------------
+# Load Balancer Listener Rule - Backend Public
+# ----------------------------------------------------------------------------------------------
+resource "aws_lb_listener_rule" "backend_public" {
+  priority     = 1
+  listener_arn = aws_lb_listener.frontend.arn
+
+  condition {
+    path_pattern {
+      values = ["/api/*"]
+    }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend_public.arn
+  }
+}
+
+# ----------------------------------------------------------------------------------------------
+# Application Load Balancer - private
+# ----------------------------------------------------------------------------------------------
+resource "aws_lb" "private" {
+  name               = "onecloud-fargate-private"
+  internal           = true
+  load_balancer_type = "application"
+  security_groups    = var.vpc_security_groups
+  subnets            = var.public_subnet_ids
+
+  # listener {
+  #   instance_port      = 8000
+  #   instance_protocol  = "http"
+  #   lb_port            = 443
+  #   lb_protocol        = "https"
+  #   ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
+  # }
+}
+
+# ----------------------------------------------------------------------------------------------
+# Load Balancer Listener - Private
+# ----------------------------------------------------------------------------------------------
+resource "aws_lb_listener" "private" {
+  load_balancer_arn = aws_lb.private.arn
+  port              = "8090"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend_private.arn
+  }
+}
+
+# ----------------------------------------------------------------------------------------------
 # Load Balancer Target Group - Backend_Private
 # ----------------------------------------------------------------------------------------------
 resource "aws_lb_target_group" "backend_private" {
@@ -65,4 +117,3 @@ resource "aws_lb_target_group" "backend_private" {
   target_type = "ip"
   vpc_id      = var.vpc_id
 }
-

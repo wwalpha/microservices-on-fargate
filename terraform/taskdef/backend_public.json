@@ -1,0 +1,14 @@
+[
+  {
+    "name": "onecloud-fargate-backend-public",
+    "image": "nginx:latest",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080,
+        "protocol": "tcp"
+      }
+    ]
+  }
+]

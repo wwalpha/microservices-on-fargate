@@ -7,8 +7,8 @@ on:
       - .github/workflows/backend_public.yml
 
 env:
-  ECR_REPOSITORY: onecloud-fargate
-  TAKS_DEFINITION_FILE: ../task-def/backend.json
+  ECR_REPOSITORY: onecloud-fargate-backend-public
+  TAKS_DEFINITION_FILE: task-def/backend_public.json
   SERVICE_NAME: backend-public
   CLUSTER_NAME: onecloud-fargate-microservice
 
@@ -52,15 +52,17 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$SERVICE_NAME_$IMAGE_TAG"
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      # update task definition
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ env.TAKS_DEFINITION_FILE }}
-          container-name: ${{ env.SERVICE_NAME }}
+          container-name: ${{ env.ECR_REPOSITORY }}
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
