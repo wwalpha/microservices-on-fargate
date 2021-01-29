@@ -3,8 +3,9 @@ name: Build and Deploy to ECS Frontend Service
 on:
   push:
     paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend.yml'
+      - frontend/**
+      - task-def/**
+      - .github/workflows/frontend.yml
 
 env:
   ECR_REPOSITORY: onecloud-fargate-frontend

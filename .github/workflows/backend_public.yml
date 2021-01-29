@@ -5,6 +5,7 @@ on:
     paths:
       - backend/public/**
       - .github/workflows/backend_public.yml
+      - task-def/**
 
 env:
   ECR_REPOSITORY: onecloud-fargate-backend-public
