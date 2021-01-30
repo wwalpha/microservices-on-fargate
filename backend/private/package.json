@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "start": "node index.js",
+    "build": "tsc",
+    "dockerbuild": "docker build -t backend-private ."
+  },
   "devDependencies": {
     "@types/express": "^4.17.11",
     "@types/node": "^14.14.22",
