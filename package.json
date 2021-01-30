@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "act push --platform ubuntu-18.04=nektos/act-environments-ubuntu:18.04 --secret-file .secrets -W .github/workflows/backend_public.yml"
+    "test": "act push --platform ubuntu-18.04=nektos/act-environments-ubuntu:18.04 --secret-file .secrets -W .github/workflows/backend_private.yml"
   },
   "repository": {
     "type": "git",
