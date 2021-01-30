@@ -10,7 +10,7 @@ app.get('/api/public', (_, res) => res.send('Hello world'));
 // private service
 app.get('/api/private', async (_, res) => {
   try {
-    const response = await axios.get('http://private.backend.microservice.local/endpoint');
+    const response = await axios.get('http://private.backend.microservice.local:8090/endpoint');
 
     res.send(response.data);
   } catch (err) {

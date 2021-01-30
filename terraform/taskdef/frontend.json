@@ -14,7 +14,6 @@
     ],
     "logConfiguration": {
       "logDriver": "awslogs",
-      "secretOptions": null,
       "options": {
         "awslogs-group": "/ecs/onecloud-fargate-frontend",
         "awslogs-region": "ap-northeast-1",
