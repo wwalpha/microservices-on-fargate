@@ -12,9 +12,10 @@ app.get('/endpoint', async (_, res) => {
 
     console.log(response.data);
 
-    res.send(response.data);
-    console.log(process.env.ECS_CONTAINER_METADATA_URI_V4);
-    res.send('private task1');
+    const taskInfo = response.data;
+    const taskId = (taskInfo.TaskARN as string).split('/')[2];
+
+    res.send(`TaskId: ${taskId}`);
   } catch (err) {
     console.log(err);
     res.send('private task2');
