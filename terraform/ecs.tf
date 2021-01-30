@@ -145,10 +145,10 @@ resource "aws_ecs_task_definition" "backend_private" {
 }
 
 # ----------------------------------------------------------------------------------------------
-# ECS Service - Backend Private
+# ECS Service - Backend Private With ALB
 # ----------------------------------------------------------------------------------------------
-resource "aws_ecs_service" "backend_private" {
-  name                               = "backend_private"
+resource "aws_ecs_service" "backend_private_with_alb" {
+  name                               = "backend_private_with_alb"
   cluster                            = aws_ecs_cluster.fargate.id
   desired_count                      = 2
   launch_type                        = "FARGATE"
@@ -156,10 +156,6 @@ resource "aws_ecs_service" "backend_private" {
   task_definition                    = aws_ecs_task_definition.backend_private.arn
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
-
-  service_registries {
-    registry_arn = aws_service_discovery_service.microservice.arn
-  }
 
   network_configuration {
     assign_public_ip = false
@@ -182,10 +178,10 @@ resource "aws_ecs_service" "backend_private" {
 # ----------------------------------------------------------------------------------------------
 # Application AutoScaling ScalableTarget - ECS
 # ----------------------------------------------------------------------------------------------
-resource "aws_appautoscaling_target" "backend_private" {
+resource "aws_appautoscaling_target" "backend_private_with_alb" {
   max_capacity       = 4
   min_capacity       = 1
-  resource_id        = "service/${aws_ecs_cluster.fargate.name}/${aws_ecs_service.backend_private.name}"
+  resource_id        = "service/${aws_ecs_cluster.fargate.name}/${aws_ecs_service.backend_private_with_alb.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
@@ -196,9 +192,9 @@ resource "aws_appautoscaling_target" "backend_private" {
 resource "aws_appautoscaling_policy" "ecs_policy" {
   name               = "ScaleOut_CPU_80"
   policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.backend_private.resource_id
-  scalable_dimension = aws_appautoscaling_target.backend_private.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.backend_private.service_namespace
+  resource_id        = aws_appautoscaling_target.backend_private_with_alb.resource_id
+  scalable_dimension = aws_appautoscaling_target.backend_private_with_alb.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.backend_private_with_alb.service_namespace
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
@@ -209,5 +205,31 @@ resource "aws_appautoscaling_policy" "ecs_policy" {
       metric_interval_upper_bound = 0
       scaling_adjustment          = -1
     }
+  }
+}
+
+
+# ----------------------------------------------------------------------------------------------
+# ECS Service - Backend Private
+# ----------------------------------------------------------------------------------------------
+resource "aws_ecs_service" "backend_private" {
+  name                               = "backend_private"
+  cluster                            = aws_ecs_cluster.fargate.id
+  desired_count                      = 1
+  launch_type                        = "FARGATE"
+  platform_version                   = "1.4.0"
+  task_definition                    = aws_ecs_task_definition.backend_private.arn
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+  scheduling_strategy                = "REPLICA"
+
+  service_registries {
+    registry_arn = aws_service_discovery_service.microservice.arn
+  }
+
+  network_configuration {
+    assign_public_ip = false
+    subnets          = var.private_subnet_ids
+    security_groups  = var.vpc_security_groups
   }
 }

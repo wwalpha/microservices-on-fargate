@@ -83,14 +83,6 @@ resource "aws_lb" "private" {
   load_balancer_type = "application"
   security_groups    = var.vpc_security_groups
   subnets            = var.public_subnet_ids
-
-  # listener {
-  #   instance_port      = 8000
-  #   instance_protocol  = "http"
-  #   lb_port            = 443
-  #   lb_protocol        = "https"
-  #   ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
-  # }
 }
 
 # ----------------------------------------------------------------------------------------------

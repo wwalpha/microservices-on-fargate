@@ -18,4 +18,17 @@ app.get('/api/private', async (_, res) => {
   }
 });
 
+// private service with alb
+app.get('/api/private-with-alb', async (_, res) => {
+  try {
+    const response = await axios.get(
+      'http://internal-onecloud-fargate-private-828171989.ap-northeast-1.elb.amazonaws.com:8090/endpoint'
+    );
+
+    res.send(response.data);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.listen(8080, () => console.log('started at port 8080'));
