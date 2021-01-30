@@ -1,4 +1,4 @@
-# fargate-microservice-architecture
+# AWS Fargate Microservice Architecture
 
 ## Architecture
 
