@@ -8,14 +8,16 @@ app.get('/', (_, res) => res.status(200).send());
 // private endpoint
 app.get('/endpoint', async (_, res) => {
   try {
-    const response = await axios.get('http://localhost:51678/v1/metadata');
+    // const response = await axios.get('http://localhost:51678/v1/metadata');
 
-    console.log(response.data);
+    // console.log(response.data);
 
-    res.send(response.data);
+    // res.send(response.data);
+    console.log(process.env.ECS_CONTAINER_METADATA_URI_V4);
+    res.send('private task1');
   } catch (err) {
     console.log(err);
-    res.send('private task');
+    res.send('private task2');
   }
 });
 
