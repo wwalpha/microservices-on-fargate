@@ -2,7 +2,7 @@
 
 ## Architecture
 
-![img](./docs/architecture1.png)
+![img](./docs/architecture2.png)
 
 ## Demonstration Points
 
