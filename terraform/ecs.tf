@@ -157,6 +157,10 @@ resource "aws_ecs_service" "backend_private" {
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
 
+  service_registries {
+    registry_arn = aws_service_discovery_service.microservice.arn
+  }
+
   network_configuration {
     assign_public_ip = false
     subnets          = var.private_subnet_ids
