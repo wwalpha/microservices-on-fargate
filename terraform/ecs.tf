@@ -67,7 +67,7 @@ resource "aws_ecs_service" "frontend" {
   desired_count                      = 1
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
-  task_definition                    = aws_ecs_task_definition.frontend.arn
+  task_definition                    = "arn:aws:ecs:${local.region}:${local.account_id}:task-definition/${aws_ecs_task_definition.frontend.family}:${local.task_definition_frontend_revision}"
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
 
@@ -110,7 +110,7 @@ resource "aws_ecs_service" "backend_public" {
   desired_count                      = 1
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
-  task_definition                    = aws_ecs_task_definition.backend_public.arn
+  task_definition                    = "arn:aws:ecs:${local.region}:${local.account_id}:task-definition/${aws_ecs_task_definition.backend_public.family}:${local.task_definition_backend_public_revision}"
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
 
@@ -153,7 +153,7 @@ resource "aws_ecs_service" "backend_private_with_alb" {
   desired_count                      = 2
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
-  task_definition                    = aws_ecs_task_definition.backend_private.arn
+  task_definition                    = "arn:aws:ecs:${local.region}:${local.account_id}:task-definition/${aws_ecs_task_definition.backend_private.family}:${local.task_definition_backend_private_revision}"
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
 
@@ -218,7 +218,7 @@ resource "aws_ecs_service" "backend_private" {
   desired_count                      = 1
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
-  task_definition                    = aws_ecs_task_definition.backend_private.arn
+  task_definition                    = "arn:aws:ecs:${local.region}:${local.account_id}:task-definition/${aws_ecs_task_definition.backend_private.family}:${local.task_definition_backend_private_revision}"
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
   scheduling_strategy                = "REPLICA"

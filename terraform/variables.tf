@@ -22,3 +22,7 @@ variable "vpc_security_groups" {
   default = ["sg-02c8769865262abbd"]
   type    = list(string)
 }
+
+variable "certificate_arn" {
+  default = "arn:aws:acm:ap-northeast-1:708988062417:certificate/0016f909-684b-4b4c-bb77-7d0b8201d31a"
+}

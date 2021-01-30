@@ -9,6 +9,15 @@
         "hostPort": 8080,
         "protocol": "tcp"
       }
-    ]
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "secretOptions": null,
+      "options": {
+        "awslogs-group": "/ecs/onecloud-fargate-backend-public",
+        "awslogs-region": "ap-northeast-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
   }
 ]

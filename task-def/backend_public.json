@@ -1,20 +1,21 @@
 {
+
   "containerDefinitions": [
-      {
-          "name": "onecloud-fargate-backend-public",
-          "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate:16e5134e4e003f0b47ddb9b84d8f4a5372e72bac",
-          "portMappings": [
-              {
-                  "containerPort": 8080,
-                  "hostPort": 8080,
-                  "protocol": "tcp"
-              }
-          ],
-          "essential": true,
-          "environment": [],
-          "mountPoints": [],
-          "volumesFrom": []
-      }
+    {
+      "name": "onecloud-fargate-backend-public",
+      "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate:16e5134e4e003f0b47ddb9b84d8f4a5372e72bac",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": []
+    }
   ],
   "family": "onecloud-fargate-backend-public",
   "taskRoleArn": "arn:aws:iam::708988062417:role/OneCloud_ECSTaskExecutionRole",
@@ -23,7 +24,7 @@
   "volumes": [],
   "placementConstraints": [],
   "requiresCompatibilities": [
-      "FARGATE"
+    "FARGATE"
   ],
   "cpu": "512",
   "memory": "1024"
