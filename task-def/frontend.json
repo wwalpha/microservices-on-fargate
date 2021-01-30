@@ -1,13 +1,4 @@
 {
-  "logConfiguration": {
-    "logDriver": "awslogs",
-    "secretOptions": null,
-    "options": {
-      "awslogs-group": "/ecs/onecloud-fargate-frontend",
-      "awslogs-region": "ap-northeast-1",
-      "awslogs-stream-prefix": "ecs"
-    }
-  },
   "containerDefinitions": [
     {
       "name": "onecloud-fargate-frontend",
@@ -21,6 +12,15 @@
           "protocol": "tcp"
         }
       ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/onecloud-fargate-frontend",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
       "essential": true,
       "environment": [],
       "mountPoints": [],
