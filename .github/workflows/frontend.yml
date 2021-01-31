@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - frontend/**
-      - task-def/**
       - .github/workflows/frontend.yml
 
 env:
   ECR_REPOSITORY: onecloud-fargate-frontend
-  TAKS_DEFINITION_FILE: task-def/frontend.json
+  TAKS_DEFINITION: onecloud-fargate-frontend
+  TAKS_DEFINITION_FILE: task_definition.json
   SERVICE_NAME: frontend
   CLUSTER_NAME: onecloud-fargate-microservice
 
@@ -22,6 +22,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
+      # Install Python
+      - name: Setup Python 3.7 for awscli
+        uses: actions/setup-python@v1
+        with:
+          version: '3.7'
+          architecture: 'x64'
+
+      # Install AWS CLI
+      - name: Install awscli
+        run: pip install --upgrade pip awscli
+
       # AWS Credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -30,22 +41,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
 
+      # Get latest task definition
+      - name: update ecs task definition
+        run: aws ecs describe-task-definition --task-definition $TAKS_DEFINITION | jq .taskDefinition > $TAKS_DEFINITION_FILE
+
       # ECR Login
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-
-      # Install nodejs
-      - uses: actions/setup-node@master
-        with:
-          node-version: 14.x
-
-      # Install libraries and build
-      - name: Install and build
-        working-directory: frontend
-        run: |
-          yarn install
-          yarn build
 
       # docker build and push
       - name: Build, tag, and push image to Amazon ECR

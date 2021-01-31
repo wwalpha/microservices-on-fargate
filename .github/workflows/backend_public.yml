@@ -5,11 +5,11 @@ on:
     paths:
       - backend/public/**
       - .github/workflows/backend_public.yml
-      - task-def/**
 
 env:
   ECR_REPOSITORY: onecloud-fargate-backend-public
-  TAKS_DEFINITION_FILE: task-def/backend_public.json
+  TAKS_DEFINITION: onecloud-fargate-backend-public
+  TAKS_DEFINITION_FILE: task_definition.json
   SERVICE_NAME: backend_public
   CLUSTER_NAME: onecloud-fargate-microservice
 
@@ -21,6 +21,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
+      # Install Python
+      - name: Setup Python 3.7 for awscli
+        uses: actions/setup-python@v1
+        with:
+          version: '3.7'
+          architecture: 'x64'
+
+      # Install AWS CLI
+      - name: Install awscli
+        run: pip install --upgrade pip awscli
+
       # AWS Credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -28,6 +39,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
+
+      # Get latest task definition
+      - name: update ecs task definition
+        run: aws ecs describe-task-definition --task-definition $TAKS_DEFINITION | jq .taskDefinition > $TAKS_DEFINITION_FILE
 
       # ECR Login
       - name: Login to Amazon ECR
