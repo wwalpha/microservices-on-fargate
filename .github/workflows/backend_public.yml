@@ -34,16 +34,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      # Install nodejs
-      - uses: actions/setup-node@master
-        with:
-          node-version: 14.x
-
-      # Install libraries
-      - name: Install and build
-        working-directory: backend/public
-        run: yarn install
-
       # docker build and push
       - name: Build, tag, and push image to Amazon ECR
         working-directory: backend/public
