@@ -5,7 +5,7 @@ import axios from 'axios';
 const app = express();
 const XRayExpress = AWSXRay.express;
 
-app.use(XRayExpress.openSegment('backend-public'));
+app.use(XRayExpress.openSegment('backend-api'));
 
 // health check
 app.get('/', (_, res) => res.status(200).send());
