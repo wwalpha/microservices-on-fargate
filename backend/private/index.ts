@@ -1,7 +1,14 @@
+import AWSXRay from 'aws-xray-sdk';
 import express from 'express';
 import axios from 'axios';
+import http from 'http';
 
 const app = express();
+const XRayExpress = AWSXRay.express;
+
+AWSXRay.captureHTTPsGlobal(http, true);
+
+app.use(XRayExpress.openSegment('backend-private'));
 
 // health check
 app.get('/', (_, res) => res.status(200).send());
@@ -21,5 +28,7 @@ app.get('/endpoint', async (_, res) => {
     res.send('private task2');
   }
 });
+
+app.use(XRayExpress.closeSegment());
 
 app.listen(8090, () => console.log('started at port 8090'));

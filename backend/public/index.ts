@@ -1,7 +1,14 @@
+import AWSXRay from 'aws-xray-sdk';
 import express from 'express';
 import axios from 'axios';
+import http from 'http';
 
 const app = express();
+const XRayExpress = AWSXRay.express;
+
+AWSXRay.captureHTTPsGlobal(http, true);
+
+app.use(XRayExpress.openSegment('backend-public'));
 
 // health check
 app.get('/', (_, res) => res.status(200).send());
@@ -30,5 +37,7 @@ app.get('/api/private-with-alb', async (_, res) => {
     console.log(err);
   }
 });
+
+app.use(XRayExpress.closeSegment());
 
 app.listen(8080, () => console.log('started at port 8080'));
