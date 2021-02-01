@@ -1,8 +1,11 @@
 [
   {
     "name": "onecloud-fargate-backend-public",
-    "image": "nginx:latest",
+    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-public:686d39c048be7e44f5016d8e585f021fe755f5fa",
     "essential": true,
+    "environment": [],
+    "mountPoints": [],
+    "volumesFrom": [],
     "portMappings": [
       {
         "containerPort": 8080,
@@ -13,6 +16,26 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "secretOptions": null,
+      "options": {
+        "awslogs-group": "/ecs/onecloud-fargate-backend-public",
+        "awslogs-region": "ap-northeast-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
+  },
+  {
+    "name": "xray-daemon",
+    "image": "amazon/aws-xray-daemon",
+    "cpu": 32,
+    "memoryReservation": 256,
+    "portMappings": [
+      {
+        "containerPort": 2000,
+        "protocol": "udp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
       "options": {
         "awslogs-group": "/ecs/onecloud-fargate-backend-public",
         "awslogs-region": "ap-northeast-1",

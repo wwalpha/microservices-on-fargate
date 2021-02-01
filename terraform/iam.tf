@@ -10,11 +10,19 @@ resource "aws_iam_role" "ecs_task_exec" {
 }
 
 # ----------------------------------------------------------------------------------------------
-# AWS ECS Task Execution Policy
+# AWS ECS Task Execution Policy - ECS Task Execution Policy
 # ----------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "ecs_task_exec" {
   role       = aws_iam_role.ecs_task_exec.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# ----------------------------------------------------------------------------------------------
+# AWS ECS Task Execution Policy - XRay Write Access
+# ----------------------------------------------------------------------------------------------
+resource "aws_iam_role_policy_attachment" "xray_write_access" {
+  role       = aws_iam_role.ecs_task_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
 
 # ----------------------------------------------------------------------------------------------
