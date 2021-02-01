@@ -1,4 +1,4 @@
-name: Build and Deploy to ECS Backend Auth Service
+name: ECS Backend Auth Service
 
 on:
   push:
