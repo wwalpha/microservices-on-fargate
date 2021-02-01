@@ -13,6 +13,7 @@
 5. Use service discovery service for balancing
 6. Application load balancer rule base routing
 7. SSL Certificate attach to load balancer
+8. [Enabled XRay](./docs/enable_xray.md) for trace
 
 ## Infrastructure Services
 
