@@ -215,7 +215,7 @@ resource "aws_appautoscaling_policy" "ecs_policy" {
 resource "aws_ecs_service" "backend_private" {
   name                               = "backend_private"
   cluster                            = aws_ecs_cluster.fargate.id
-  desired_count                      = 1
+  desired_count                      = 2
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
   task_definition                    = "arn:aws:ecs:${local.region}:${local.account_id}:task-definition/${aws_ecs_task_definition.backend_private.family}:${local.task_definition_backend_private_revision}"
