@@ -17,6 +17,7 @@
       "logDriver": "awslogs",
       "secretOptions": null,
       "options": {
+        "awslogs-create-group": "true",
         "awslogs-group": "/ecs/onecloud-fargate-backend-auth",
         "awslogs-region": "ap-northeast-1",
         "awslogs-stream-prefix": "ecs"
@@ -31,6 +32,7 @@
     "portMappings": [
       {
         "containerPort": 2000,
+        "hostPort": 2000,
         "protocol": "udp"
       }
     ],
@@ -38,6 +40,7 @@
       "logDriver": "awslogs",
       "secretOptions": null,
       "options": {
+        "awslogs-create-group": "true",
         "awslogs-group": "/ecs/xray-daemon",
         "awslogs-region": "ap-northeast-1",
         "awslogs-stream-prefix": "ecs"

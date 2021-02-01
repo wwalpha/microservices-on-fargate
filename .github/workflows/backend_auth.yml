@@ -5,6 +5,7 @@ on:
     paths:
       - backend/auth/**
       - .github/workflows/backend_auth.yml
+      - terraform/taskdef/backend_auth.json
 
 env:
   ECR_REPOSITORY: onecloud-fargate-backend-auth

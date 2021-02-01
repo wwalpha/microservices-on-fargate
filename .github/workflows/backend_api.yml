@@ -1,10 +1,11 @@
-name: Build and Deploy to ECS Backend API Service
+name: ECS Backend API Service
 
 on:
   push:
     paths:
       - backend/api/**
       - .github/workflows/backend_api.yml
+      - terraform/taskdef/backend_api.json
 
 env:
   ECR_REPOSITORY: onecloud-fargate-backend-api

@@ -28,6 +28,8 @@ resource "aws_iam_role_policy_attachment" "xray_write_access" {
 # ----------------------------------------------------------------------------------------------
 # AWS ECS Task Execution Policy
 # ----------------------------------------------------------------------------------------------
-data "aws_iam_role" "service_role_for_ecs" {
-  name = "AWSServiceRoleForECS"
+resource "aws_iam_role_policy" "inline" {
+  name   = "inline-policy"
+  role   = aws_iam_role.ecs_task_exec.id
+  policy = file("iam/inline-policy.json")
 }

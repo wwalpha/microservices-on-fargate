@@ -5,6 +5,7 @@ on:
     paths:
       - backend/worker/**
       - .github/workflows/backend_worker.yml
+      - terraform/taskdef/backend_worker.json
 
 env:
   ECR_REPOSITORY: onecloud-fargate-backend-worker

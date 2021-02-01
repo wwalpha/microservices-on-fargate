@@ -1,4 +1,4 @@
-name: Build and Deploy to ECS Frontend Service
+name: ECS Frontend Service
 
 on:
   push:
@@ -16,7 +16,6 @@ env:
 
 jobs:
   build:
-    name: Build and Deploy to ECS Frontend Service
     runs-on: ubuntu-latest
 
     steps:
