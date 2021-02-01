@@ -25,7 +25,7 @@ app.get('/api/auth', async (_, res) => {
 // backend worker service
 app.get('/api/worker', async (_, res) => {
   try {
-    const response = await axios.get('http://worker.backend.microservice.local:8080/endpoint');
+    const response = await axios.get('http://worker.backend.microservice.local:8090/endpoint');
 
     res.send(response.data);
   } catch (err) {
