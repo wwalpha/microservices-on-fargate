@@ -1,4 +1,4 @@
-name: Build and Deploy to ECS Backend Worker Service
+name: ECS Backend Worker Service
 
 on:
   push:
