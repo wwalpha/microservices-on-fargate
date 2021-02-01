@@ -1,16 +1,16 @@
-name: Build and Deploy to ECS Backend_Private Service
+name: Build and Deploy to ECS Backend Auth Service
 
 on:
   push:
     paths:
-      - backend/private/**
-      - .github/workflows/backend_private.yml
+      - backend/auth/**
+      - .github/workflows/backend_auth.yml
 
 env:
-  ECR_REPOSITORY: onecloud-fargate-backend-private
-  TAKS_DEFINITION: onecloud-fargate-backend-private
+  ECR_REPOSITORY: onecloud-fargate-backend-auth
+  TAKS_DEFINITION: onecloud-fargate-backend-auth
   TAKS_DEFINITION_FILE: task_definition.json
-  SERVICE_NAME: backend_private
+  SERVICE_NAME: backend_auth
   CLUSTER_NAME: onecloud-fargate-microservice
 
 jobs:
@@ -76,4 +76,4 @@ jobs:
           task-definition: ${{ steps.render-web-container.outputs.task-definition }}
           service: ${{ env.SERVICE_NAME }}
           cluster: ${{ env.CLUSTER_NAME }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false

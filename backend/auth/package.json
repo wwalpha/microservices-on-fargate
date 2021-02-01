@@ -2,7 +2,7 @@
   "scripts": {
     "start": "node index.js",
     "build": "tsc",
-    "dockerbuild": "docker build -t backend-private ."
+    "dockerbuild": "docker build -t backend-auth ."
   },
   "devDependencies": {
     "@types/express": "^4.17.11",

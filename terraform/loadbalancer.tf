@@ -7,14 +7,6 @@ resource "aws_lb" "public" {
   load_balancer_type = "application"
   security_groups    = var.vpc_security_groups
   subnets            = var.public_subnet_ids
-
-  # listener {
-  #   instance_port      = 8000
-  #   instance_protocol  = "http"
-  #   lb_port            = 443
-  #   lb_protocol        = "https"
-  #   ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
-  # }
 }
 
 # ----------------------------------------------------------------------------------------------
@@ -45,10 +37,10 @@ resource "aws_lb_listener" "frontend" {
 }
 
 # ----------------------------------------------------------------------------------------------
-# Load Balancer Target Group - Backend_Public
+# Load Balancer Target Group - Backend API
 # ----------------------------------------------------------------------------------------------
-resource "aws_lb_target_group" "backend_public" {
-  name        = "onecloud-fargate-backend-public"
+resource "aws_lb_target_group" "backend_api" {
+  name        = "onecloud-fargate-backend-api"
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
@@ -56,9 +48,9 @@ resource "aws_lb_target_group" "backend_public" {
 }
 
 # ----------------------------------------------------------------------------------------------
-# Load Balancer Listener Rule - Backend Public
+# Load Balancer Listener Rule - Backend API
 # ----------------------------------------------------------------------------------------------
-resource "aws_lb_listener_rule" "backend_public" {
+resource "aws_lb_listener_rule" "backend_api" {
   priority     = 1
   listener_arn = aws_lb_listener.frontend.arn
 
@@ -70,42 +62,42 @@ resource "aws_lb_listener_rule" "backend_public" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_public.arn
+    target_group_arn = aws_lb_target_group.backend_api.arn
   }
 }
 
 # ----------------------------------------------------------------------------------------------
 # Application Load Balancer - private
 # ----------------------------------------------------------------------------------------------
-resource "aws_lb" "private" {
-  name               = "onecloud-fargate-private"
-  internal           = true
-  load_balancer_type = "application"
-  security_groups    = var.vpc_security_groups
-  subnets            = var.public_subnet_ids
-}
+# resource "aws_lb" "private" {
+#   name               = "onecloud-fargate-private"
+#   internal           = true
+#   load_balancer_type = "application"
+#   security_groups    = var.vpc_security_groups
+#   subnets            = var.public_subnet_ids
+# }
 
 # ----------------------------------------------------------------------------------------------
 # Load Balancer Listener - Private
 # ----------------------------------------------------------------------------------------------
-resource "aws_lb_listener" "private" {
-  load_balancer_arn = aws_lb.private.arn
-  port              = "8090"
-  protocol          = "HTTP"
+# resource "aws_lb_listener" "private" {
+#   load_balancer_arn = aws_lb.private.arn
+#   port              = "8090"
+#   protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_private.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.backend_auth.arn
+#   }
+# }
 
 # ----------------------------------------------------------------------------------------------
-# Load Balancer Target Group - Backend_Private
+# Load Balancer Target Group - Backend Auth
 # ----------------------------------------------------------------------------------------------
-resource "aws_lb_target_group" "backend_private" {
-  name        = "onecloud-fargate-backend-private"
-  port        = 8090
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = var.vpc_id
-}
+# resource "aws_lb_target_group" "backend_auth" {
+#   name        = "onecloud-fargate-backend-auth"
+#   port        = 8090
+#   protocol    = "HTTP"
+#   target_type = "ip"
+#   vpc_id      = var.vpc_id
+# }

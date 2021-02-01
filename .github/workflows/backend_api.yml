@@ -1,16 +1,16 @@
-name: Build and Deploy to ECS Backend_Private Service
+name: Build and Deploy to ECS Backend API Service
 
 on:
   push:
     paths:
-      - backend/private/**
-      - .github/workflows/backend_private.yml
+      - backend/api/**
+      - .github/workflows/backend_api.yml
 
 env:
-  ECR_REPOSITORY: onecloud-fargate-backend-private
-  TAKS_DEFINITION: onecloud-fargate-backend-private
+  ECR_REPOSITORY: onecloud-fargate-backend-api
+  TAKS_DEFINITION: onecloud-fargate-backend-api
   TAKS_DEFINITION_FILE: task_definition.json
-  SERVICE_NAME: backend_private_with_alb
+  SERVICE_NAME: backend_api
   CLUSTER_NAME: onecloud-fargate-microservice
 
 jobs:
@@ -51,7 +51,7 @@ jobs:
 
       # docker build and push
       - name: Build, tag, and push image to Amazon ECR
-        working-directory: backend/private
+        working-directory: backend/public
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -76,4 +76,4 @@ jobs:
           task-definition: ${{ steps.render-web-container.outputs.task-definition }}
           service: ${{ env.SERVICE_NAME }}
           cluster: ${{ env.CLUSTER_NAME }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false

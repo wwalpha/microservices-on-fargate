@@ -1,16 +1,16 @@
-name: Build and Deploy to ECS Frontend Service
+name: Build and Deploy to ECS Backend Worker Service
 
 on:
   push:
     paths:
-      - backend/public/**
-      - .github/workflows/backend_public.yml
+      - backend/worker/**
+      - .github/workflows/backend_worker.yml
 
 env:
-  ECR_REPOSITORY: onecloud-fargate-backend-public
-  TAKS_DEFINITION: onecloud-fargate-backend-public
+  ECR_REPOSITORY: onecloud-fargate-backend-worker
+  TAKS_DEFINITION: onecloud-fargate-backend-worker
   TAKS_DEFINITION_FILE: task_definition.json
-  SERVICE_NAME: backend_public
+  SERVICE_NAME: backend_worker
   CLUSTER_NAME: onecloud-fargate-microservice
 
 jobs:
@@ -51,7 +51,7 @@ jobs:
 
       # docker build and push
       - name: Build, tag, and push image to Amazon ECR
-        working-directory: backend/public
+        working-directory: backend/private
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -76,4 +76,4 @@ jobs:
           task-definition: ${{ steps.render-web-container.outputs.task-definition }}
           service: ${{ env.SERVICE_NAME }}
           cluster: ${{ env.CLUSTER_NAME }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false
