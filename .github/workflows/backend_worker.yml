@@ -12,7 +12,7 @@ env:
   TAKS_DEFINITION_FILE: task_definition.json
   SERVICE_NAME: backend_worker
   CLUSTER_NAME: onecloud-fargate-microservice
-  WORKING_DIR: backend_worker
+  WORKING_DIR: backend/worker
 
 jobs:
   build:
