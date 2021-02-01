@@ -12,6 +12,7 @@ env:
   TAKS_DEFINITION_FILE: task_definition.json
   SERVICE_NAME: backend_auth
   CLUSTER_NAME: onecloud-fargate-microservice
+  WORKING_DIR: backend_auth
 
 jobs:
   build:
@@ -51,7 +52,7 @@ jobs:
 
       # docker build and push
       - name: Build, tag, and push image to Amazon ECR
-        working-directory: backend/private
+        working-directory: ${{ env.WORKING_DIR }}
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}

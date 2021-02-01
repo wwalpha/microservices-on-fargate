@@ -165,7 +165,7 @@ resource "aws_ecs_task_definition" "backend_auth" {
 resource "aws_ecs_service" "backend_auth" {
   name                               = "backend_auth"
   cluster                            = aws_ecs_cluster.fargate.id
-  desired_count                      = 2
+  desired_count                      = 1
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
   task_definition                    = "arn:aws:ecs:${local.region}:${local.account_id}:task-definition/${aws_ecs_task_definition.backend_auth.family}:${local.task_definition_backend_auth_revision}"
@@ -192,7 +192,7 @@ resource "aws_ecs_service" "backend_auth" {
 # Application AutoScaling ScalableTarget - ECS
 # ----------------------------------------------------------------------------------------------
 resource "aws_appautoscaling_target" "backend_auth" {
-  max_capacity       = 4
+  max_capacity       = 3
   min_capacity       = 1
   resource_id        = "service/${aws_ecs_cluster.fargate.name}/${aws_ecs_service.backend_auth.name}"
   scalable_dimension = "ecs:service:DesiredCount"
