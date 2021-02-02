@@ -75,7 +75,7 @@
     "environment": [
       {
         "name": "APPMESH_RESOURCE_ARN",
-        "value": "arn:aws:appmesh:ap-northeast-1:708988062417:mesh/fargate-microservice-mesh/virtualNode/auth-node"
+        "value": "arn:aws:appmesh:ap-northeast-1:708988062417:mesh/fargate-microservice-mesh/virtualNode/worker-node"
       }
     ],
     "healthCheck": {
