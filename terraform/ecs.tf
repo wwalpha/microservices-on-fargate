@@ -59,7 +59,7 @@ resource "aws_ecs_cluster" "fargate" {
 resource "aws_ecs_task_definition" "frontend" {
   family                = "onecloud-fargate-frontend"
   container_definitions = file("taskdef/frontend.json")
-  task_role_arn         = aws_iam_role.ecs_task_exec.arn
+  task_role_arn         = aws_iam_role.ecs_task.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
   network_mode          = "awsvpc"
   requires_compatibilities = [
@@ -102,7 +102,7 @@ resource "aws_ecs_service" "frontend" {
 resource "aws_ecs_task_definition" "backend_api" {
   family                = local.task_def_family_backend_api
   container_definitions = file("taskdef/backend_api.json")
-  task_role_arn         = aws_iam_role.ecs_task_exec.arn
+  task_role_arn         = aws_iam_role.ecs_task.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
   network_mode          = "awsvpc"
   requires_compatibilities = [
@@ -113,13 +113,13 @@ resource "aws_ecs_task_definition" "backend_api" {
 
   proxy_configuration {
     type           = "APPMESH"
-    container_name = local.task_def_family_backend_api
+    container_name = "envoy"
     properties = {
       "ProxyIngressPort" = "15000"
       "ProxyEgressPort"  = "15001"
       "AppPorts"         = "8080"
       "EgressIgnoredIPs" = "169.254.170.2,169.254.169.254"
-      "IgnoredUID"       = "1336"
+      "IgnoredUID"       = "1337"
     }
   }
 }
@@ -161,7 +161,7 @@ resource "aws_ecs_service" "backend_api" {
 resource "aws_ecs_task_definition" "backend_auth" {
   family                = local.task_def_family_backend_auth
   container_definitions = file("taskdef/backend_auth.json")
-  task_role_arn         = aws_iam_role.ecs_task_exec.arn
+  task_role_arn         = aws_iam_role.ecs_task.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
   network_mode          = "awsvpc"
   requires_compatibilities = [
@@ -172,7 +172,7 @@ resource "aws_ecs_task_definition" "backend_auth" {
 
   proxy_configuration {
     type           = "APPMESH"
-    container_name = local.task_def_family_backend_auth
+    container_name = "envoy"
     properties = {
       "ProxyIngressPort" = "15000"
       "ProxyEgressPort"  = "15001"
@@ -247,7 +247,7 @@ resource "aws_appautoscaling_policy" "ecs_policy" {
 resource "aws_ecs_task_definition" "backend_worker" {
   family                = local.task_def_family_backend_worker
   container_definitions = file("taskdef/backend_worker.json")
-  task_role_arn         = aws_iam_role.ecs_task_exec.arn
+  task_role_arn         = aws_iam_role.ecs_task.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
   network_mode          = "awsvpc"
   requires_compatibilities = [
@@ -258,13 +258,13 @@ resource "aws_ecs_task_definition" "backend_worker" {
 
   proxy_configuration {
     type           = "APPMESH"
-    container_name = local.task_def_family_backend_worker
+    container_name = "envoy"
     properties = {
       "ProxyIngressPort" = "15000"
       "ProxyEgressPort"  = "15001"
       "AppPorts"         = "8090"
       "EgressIgnoredIPs" = "169.254.170.2,169.254.169.254"
-      "IgnoredUID"       = "1338"
+      "IgnoredUID"       = "1337"
     }
   }
 }
