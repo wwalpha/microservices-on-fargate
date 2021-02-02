@@ -1,7 +1,7 @@
 [
   {
     "name": "onecloud-fargate-backend-api",
-    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-api:71c6ce9c5e060d6b9672fee346881fa204dbaab9",
+    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-api:d2aa469a139abd661c1caeff9b3fddb6c0f0fda5",
     "essential": true,
     "environment": [],
     "mountPoints": [],
@@ -42,12 +42,6 @@
     ],
     "cpu": 32,
     "memoryReservation": 256,
-    "environment": [
-      {
-        "name": "ENABLE_ENVOY_XRAY_TRACING",
-        "value": "1"
-      }
-    ],
     "portMappings": [
       {
         "containerPort": 2000,
@@ -68,16 +62,51 @@
   },
   {
     "name": "envoy",
-    "user": "1336",
+    "user": "1337",
     "image": "840364872350.dkr.ecr.ap-northeast-1.amazonaws.com/aws-appmesh-envoy:v1.16.1.0-prod",
     "essential": true,
     "memory": 500,
-    "environment": [
+    "portMappings": [
       {
-        "name": "APPMESH_RESOURCE_ARN",
-        "value": "arn:aws:appmesh:ap-northeast-1:708988062417:mesh/fargate-microservice-mesh/virtualNode/api-node"
+        "containerPort": 9901,
+        "hostPort": 9901,
+        "protocol": "tcp"
+      },
+      {
+        "containerPort": 15000,
+        "hostPort": 15000,
+        "protocol": "tcp"
+      },
+      {
+        "containerPort": 15001,
+        "hostPort": 15001,
+        "protocol": "tcp"
       }
     ],
+    "environment": [
+      {
+        "name": "APPMESH_VIRTUAL_NODE_NAME",
+        "value": "mesh/fargate-microservice-mesh/virtualNode/api-node"
+      },
+      {
+        "name": "ENVOY_LOG_LEVEL",
+        "value": "debug"
+      },
+      {
+        "name": "ENABLE_ENVOY_XRAY_TRACING",
+        "value": "1"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "secretOptions": null,
+      "options": {
+        "awslogs-create-group": "true",
+        "awslogs-group": "/ecs/envoy",
+        "awslogs-region": "ap-northeast-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
     "healthCheck": {
       "retries": 3,
       "command": [

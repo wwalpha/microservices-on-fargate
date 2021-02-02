@@ -1,7 +1,8 @@
 [
   {
     "name": "onecloud-fargate-backend-auth",
-    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-auth:75362c0be43c00dfe548339739906db092a62d10",
+    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-auth:75879d79d7646a3ce9b7099856f95121aef66a68",
+    "essential": true,
     "environment": [],
     "mountPoints": [],
     "volumesFrom": [],
@@ -41,12 +42,6 @@
     ],
     "cpu": 32,
     "memoryReservation": 256,
-    "environment": [
-      {
-        "name": "ENABLE_ENVOY_XRAY_TRACING",
-        "value": "1"
-      }
-    ],
     "portMappings": [
       {
         "containerPort": 2000,
@@ -71,12 +66,47 @@
     "image": "840364872350.dkr.ecr.ap-northeast-1.amazonaws.com/aws-appmesh-envoy:v1.16.1.0-prod",
     "essential": true,
     "memory": 500,
-    "environment": [
+    "portMappings": [
       {
-        "name": "APPMESH_RESOURCE_ARN",
-        "value": "arn:aws:appmesh:ap-northeast-1:708988062417:mesh/fargate-microservice-mesh/virtualNode/auth-node"
+        "containerPort": 9901,
+        "hostPort": 9901,
+        "protocol": "tcp"
+      },
+      {
+        "containerPort": 15000,
+        "hostPort": 15000,
+        "protocol": "tcp"
+      },
+      {
+        "containerPort": 15001,
+        "hostPort": 15001,
+        "protocol": "tcp"
       }
     ],
+    "environment": [
+      {
+        "name": "APPMESH_VIRTUAL_NODE_NAME",
+        "value": "mesh/fargate-microservice-mesh/virtualNode/auth-node"
+      },
+      {
+        "name": "ENVOY_LOG_LEVEL",
+        "value": "debug"
+      },
+      {
+        "name": "ENABLE_ENVOY_XRAY_TRACING",
+        "value": "1"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "secretOptions": null,
+      "options": {
+        "awslogs-create-group": "true",
+        "awslogs-group": "/ecs/envoy",
+        "awslogs-region": "ap-northeast-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
     "healthCheck": {
       "retries": 3,
       "command": [
