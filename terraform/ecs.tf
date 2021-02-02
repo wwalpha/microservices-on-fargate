@@ -115,8 +115,8 @@ resource "aws_ecs_task_definition" "backend_api" {
     type           = "APPMESH"
     container_name = local.task_def_family_backend_api
     properties = {
-      "ProxyIngressPort"   = "15000"
-      "ProxyEgressPort"    = "15001"
+      "ProxyIngressPort"   = "80"
+      "ProxyEgressPort"    = "81"
       "AppPorts"           = "8080"
       "EgressIgnoredIPs"   = "169.254.170.2,169.254.169.254"
       "EgressIgnoredPorts" = ""
@@ -176,8 +176,8 @@ resource "aws_ecs_task_definition" "backend_auth" {
     type           = "APPMESH"
     container_name = local.task_def_family_backend_auth
     properties = {
-      "ProxyIngressPort"   = "15000"
-      "ProxyEgressPort"    = "15001"
+      "ProxyIngressPort"   = "80"
+      "ProxyEgressPort"    = "81"
       "AppPorts"           = "8090"
       "EgressIgnoredIPs"   = "169.254.170.2,169.254.169.254"
       "EgressIgnoredPorts" = ""
@@ -264,8 +264,8 @@ resource "aws_ecs_task_definition" "backend_worker" {
     type           = "APPMESH"
     container_name = local.task_def_family_backend_worker
     properties = {
-      "ProxyIngressPort"   = "15000"
-      "ProxyEgressPort"    = "15001"
+      "ProxyIngressPort"   = "80"
+      "ProxyEgressPort"    = "81"
       "AppPorts"           = "8090"
       "EgressIgnoredIPs"   = "169.254.170.2,169.254.169.254"
       "EgressIgnoredPorts" = ""
