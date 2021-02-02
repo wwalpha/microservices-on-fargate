@@ -14,7 +14,7 @@ app.get('/api/local', (_, res) => res.send('Hello world'));
 // backend auth service
 app.get('/api/auth', async (_, res) => {
   try {
-    const response = await axios.get('http://auth-service:8090/endpoint');
+    const response = await axios.get('http://auth.backend.microservice.local:8090/endpoint');
 
     res.send(response.data);
   } catch (err) {
