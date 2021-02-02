@@ -1,11 +1,17 @@
 [
   {
     "name": "onecloud-fargate-backend-worker",
-    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-worker:latest",
+    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-worker:75362c0be43c00dfe548339739906db092a62d10",
     "essential": true,
     "environment": [],
     "mountPoints": [],
     "volumesFrom": [],
+    "dependsOn": [
+      {
+        "containerName": "envoy",
+        "condition": "HEALTHY"
+      }
+    ],
     "portMappings": [
       {
         "containerPort": 8080,
@@ -27,8 +33,21 @@
   {
     "name": "xray-daemon",
     "image": "amazon/aws-xray-daemon",
+    "essential": true,
+    "dependsOn": [
+      {
+        "containerName": "envoy",
+        "condition": "HEALTHY"
+      }
+    ],
     "cpu": 32,
     "memoryReservation": 256,
+    "environment": [
+      {
+        "name": "ENABLE_ENVOY_XRAY_TRACING",
+        "value": "1"
+      }
+    ],
     "portMappings": [
       {
         "containerPort": 2000,
@@ -38,12 +57,36 @@
     ],
     "logConfiguration": {
       "logDriver": "awslogs",
+      "secretOptions": null,
       "options": {
         "awslogs-create-group": "true",
         "awslogs-group": "/ecs/xray-daemon",
         "awslogs-region": "ap-northeast-1",
         "awslogs-stream-prefix": "ecs"
       }
+    }
+  },
+  {
+    "name": "envoy",
+    "user": "1338",
+    "image": "840364872350.dkr.ecr.ap-northeast-1.amazonaws.com/aws-appmesh-envoy:v1.16.1.0-prod",
+    "essential": true,
+    "memory": 500,
+    "environment": [
+      {
+        "name": "APPMESH_RESOURCE_ARN",
+        "value": "arn:aws:appmesh:ap-northeast-1:708988062417:mesh/fargate-microservice-mesh/virtualNode/auth-node"
+      }
+    ],
+    "healthCheck": {
+      "retries": 3,
+      "command": [
+        "CMD-SHELL",
+        "curl -s http://localhost:9901/server_info | grep state | grep -q LIVE"
+      ],
+      "timeout": 2,
+      "interval": 5,
+      "startPeriod": 10
     }
   }
 ]

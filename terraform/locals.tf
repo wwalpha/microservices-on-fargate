@@ -6,6 +6,11 @@ locals {
   task_definition_backend_auth_revision   = max(aws_ecs_task_definition.backend_auth.revision, data.aws_ecs_task_definition.backend_auth.revision)
   task_definition_backend_worker_revision = max(aws_ecs_task_definition.backend_worker.revision, data.aws_ecs_task_definition.backend_worker.revision)
   task_definition_frontend_revision       = max(aws_ecs_task_definition.frontend.revision, data.aws_ecs_task_definition.frontend.revision)
+
+  task_def_family_backend_api     = "onecloud-fargate-backend-api"
+  task_def_family_backend_auth    = "onecloud-fargate-backend-auth"
+  task_def_family_backend_workder = "onecloud-fargate-backend-worker"
+
 }
 
 # ----------------------------------------------------------------------------------------------

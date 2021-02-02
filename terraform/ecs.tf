@@ -100,7 +100,7 @@ resource "aws_ecs_service" "frontend" {
 # ECS Service - Backend API Task Definition
 # ----------------------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "backend_api" {
-  family                = "onecloud-fargate-backend-api"
+  family                = local.task_def_family_backend_api
   container_definitions = file("taskdef/backend_api.json")
   task_role_arn         = aws_iam_role.ecs_task_exec.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
@@ -108,8 +108,22 @@ resource "aws_ecs_task_definition" "backend_api" {
   requires_compatibilities = [
     "FARGATE"
   ]
-  cpu    = "512"
-  memory = "1024"
+  cpu    = "1024"
+  memory = "2048"
+
+  proxy_configuration {
+    type           = "APPMESH"
+    container_name = local.task_def_family_backend_api
+    properties = {
+      "ProxyIngressPort"   = "15000"
+      "ProxyEgressPort"    = "15001"
+      "AppPorts"           = "8080"
+      "EgressIgnoredIPs"   = "169.254.170.2,169.254.169.254"
+      "EgressIgnoredPorts" = ""
+      "IgnoredGID"         = ""
+      "IgnoredUID"         = "1336"
+    }
+  }
 }
 
 # ----------------------------------------------------------------------------------------------
@@ -147,7 +161,7 @@ resource "aws_ecs_service" "backend_api" {
 # ECS Service - Backend Auth Task Definition
 # ----------------------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "backend_auth" {
-  family                = "onecloud-fargate-backend-auth"
+  family                = local.task_def_family_backend_auth
   container_definitions = file("taskdef/backend_auth.json")
   task_role_arn         = aws_iam_role.ecs_task_exec.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
@@ -155,8 +169,22 @@ resource "aws_ecs_task_definition" "backend_auth" {
   requires_compatibilities = [
     "FARGATE"
   ]
-  cpu    = "512"
-  memory = "1024"
+  cpu    = "1024"
+  memory = "2048"
+
+  proxy_configuration {
+    type           = "APPMESH"
+    container_name = local.task_def_family_backend_auth
+    properties = {
+      "ProxyIngressPort"   = "15000"
+      "ProxyEgressPort"    = "15001"
+      "AppPorts"           = "8090"
+      "EgressIgnoredIPs"   = "169.254.170.2,169.254.169.254"
+      "EgressIgnoredPorts" = ""
+      "IgnoredGID"         = ""
+      "IgnoredUID"         = "1337"
+    }
+  }
 }
 
 # ----------------------------------------------------------------------------------------------
@@ -221,7 +249,7 @@ resource "aws_appautoscaling_policy" "ecs_policy" {
 # ECS Service - Backend Worker Task Definition
 # ----------------------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "backend_worker" {
-  family                = "onecloud-fargate-backend-worker"
+  family                = local.task_def_family_backend_worker
   container_definitions = file("taskdef/backend_worker.json")
   task_role_arn         = aws_iam_role.ecs_task_exec.arn
   execution_role_arn    = aws_iam_role.ecs_task_exec.arn
@@ -229,8 +257,22 @@ resource "aws_ecs_task_definition" "backend_worker" {
   requires_compatibilities = [
     "FARGATE"
   ]
-  cpu    = "512"
-  memory = "1024"
+  cpu    = "1024"
+  memory = "2048"
+
+  proxy_configuration {
+    type           = "APPMESH"
+    container_name = local.task_def_family_backend_worker
+    properties = {
+      "ProxyIngressPort"   = "15000"
+      "ProxyEgressPort"    = "15001"
+      "AppPorts"           = "8090"
+      "EgressIgnoredIPs"   = "169.254.170.2,169.254.169.254"
+      "EgressIgnoredPorts" = ""
+      "IgnoredGID"         = ""
+      "IgnoredUID"         = "1338"
+    }
+  }
 }
 
 # ----------------------------------------------------------------------------------------------
