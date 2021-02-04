@@ -33,6 +33,10 @@ resource "aws_ecr_repository" "frontend" {
 # ECR - Frontend Image
 # ----------------------------------------------------------------------------------------------
 resource "null_resource" "frontend" {
+  triggers = {
+    file_content_md5 = md5(file("scripts/dockerbuild.sh"))
+  }
+
   provisioner "local-exec" {
     command = "sh ${path.module}/scripts/dockerbuild.sh"
 
@@ -41,6 +45,7 @@ resource "null_resource" "frontend" {
       AWS_REGION     = local.region
       AWS_ACCOUNT_ID = local.account_id
       REPO_URL       = aws_ecr_repository.frontend.repository_url
+      CONTAINER_NAME = "frontend"
     }
   }
 }
@@ -60,6 +65,10 @@ resource "aws_ecr_repository" "backend_api" {
 # ECR - Backend API Image
 # ----------------------------------------------------------------------------------------------
 resource "null_resource" "backend_api" {
+  triggers = {
+    file_content_md5 = md5(file("scripts/dockerbuild.sh"))
+  }
+
   provisioner "local-exec" {
     command = "sh ${path.module}/scripts/dockerbuild.sh"
 
@@ -68,6 +77,7 @@ resource "null_resource" "backend_api" {
       AWS_REGION     = local.region
       AWS_ACCOUNT_ID = local.account_id
       REPO_URL       = aws_ecr_repository.backend_api.repository_url
+      CONTAINER_NAME = "backend_auth"
     }
   }
 }
@@ -87,6 +97,10 @@ resource "aws_ecr_repository" "backend_auth" {
 # ECR - Backend Auth Image
 # ----------------------------------------------------------------------------------------------
 resource "null_resource" "backend_auth" {
+  triggers = {
+    file_content_md5 = md5(file("scripts/dockerbuild.sh"))
+  }
+
   provisioner "local-exec" {
     command = "sh ${path.module}/scripts/dockerbuild.sh"
 
@@ -95,6 +109,7 @@ resource "null_resource" "backend_auth" {
       AWS_REGION     = local.region
       AWS_ACCOUNT_ID = local.account_id
       REPO_URL       = aws_ecr_repository.backend_auth.repository_url
+      CONTAINER_NAME = "backend_auth"
     }
   }
 }
@@ -114,6 +129,10 @@ resource "aws_ecr_repository" "backend_worker" {
 # ECR - Backend Worker Image
 # ----------------------------------------------------------------------------------------------
 resource "null_resource" "backend_worker" {
+  triggers = {
+    file_content_md5 = md5(file("scripts/dockerbuild.sh"))
+  }
+
   provisioner "local-exec" {
     command = "sh ${path.module}/scripts/dockerbuild.sh"
 
@@ -122,6 +141,7 @@ resource "null_resource" "backend_worker" {
       AWS_REGION     = local.region
       AWS_ACCOUNT_ID = local.account_id
       REPO_URL       = aws_ecr_repository.backend_worker.repository_url
+      CONTAINER_NAME = "backend_worker"
     }
   }
 }

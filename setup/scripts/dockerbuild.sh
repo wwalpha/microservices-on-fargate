@@ -1,13 +1,14 @@
-echo '123456789012345789'
-
-pwd
-
+# Change foloder
 cd $FOLDER_PATH
 
+# Docker login
 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-docker build -t backend_auth .
+# Build image
+docker build -t $CONTAINER_NAME .
 
-docker tag backend_auth:latest $REPO_URL:latest
+# Tag
+docker tag $CONTAINER_NAME:latest $REPO_URL:latest
 
+# Push image
 docker push $REPO_URL:latest

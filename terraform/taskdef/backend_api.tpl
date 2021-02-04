@@ -1,7 +1,7 @@
 [
   {
-    "name": "onecloud-fargate-backend-auth",
-    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-backend-auth:75879d79d7646a3ce9b7099856f95121aef66a68",
+    "name": "${container_name}",
+    "image": "${container_image}",
     "essential": true,
     "environment": [],
     "mountPoints": [],
@@ -14,8 +14,8 @@
     ],
     "portMappings": [
       {
-        "containerPort": 8090,
-        "hostPort": 8090,
+        "containerPort": 8080,
+        "hostPort": 8080,
         "protocol": "tcp"
       }
     ],
@@ -24,8 +24,8 @@
       "secretOptions": null,
       "options": {
         "awslogs-create-group": "true",
-        "awslogs-group": "/ecs/onecloud-fargate-backend-auth",
-        "awslogs-region": "ap-northeast-1",
+        "awslogs-group": "/ecs/${container_name}",
+        "awslogs-region": "${aws_region}",
         "awslogs-stream-prefix": "ecs"
       }
     }
@@ -34,6 +34,9 @@
     "name": "xray-daemon",
     "image": "amazon/aws-xray-daemon",
     "essential": true,
+    "environment": [],
+    "mountPoints": [],
+    "volumesFrom": [],
     "dependsOn": [
       {
         "containerName": "envoy",
@@ -55,7 +58,7 @@
       "options": {
         "awslogs-create-group": "true",
         "awslogs-group": "/ecs/xray-daemon",
-        "awslogs-region": "ap-northeast-1",
+        "awslogs-region": "${aws_region}",
         "awslogs-stream-prefix": "ecs"
       }
     }
@@ -63,50 +66,21 @@
   {
     "name": "envoy",
     "user": "1337",
-    "image": "840364872350.dkr.ecr.ap-northeast-1.amazonaws.com/aws-appmesh-envoy:v1.16.1.0-prod",
+    "image": "840364872350.dkr.ecr.${aws_region}.amazonaws.com/aws-appmesh-envoy:v1.16.1.0-prod",
     "essential": true,
+    "mountPoints": [],
+    "volumesFrom": [],
     "memory": 500,
-    "portMappings": [
-      {
-        "containerPort": 9901,
-        "hostPort": 9901,
-        "protocol": "tcp"
-      },
-      {
-        "containerPort": 15000,
-        "hostPort": 15000,
-        "protocol": "tcp"
-      },
-      {
-        "containerPort": 15001,
-        "hostPort": 15001,
-        "protocol": "tcp"
-      }
-    ],
     "environment": [
       {
         "name": "APPMESH_VIRTUAL_NODE_NAME",
-        "value": "mesh/fargate-microservice-mesh/virtualNode/auth-node"
-      },
-      {
-        "name": "ENVOY_LOG_LEVEL",
-        "value": "debug"
+        "value": "${app_mesh_node}"
       },
       {
         "name": "ENABLE_ENVOY_XRAY_TRACING",
         "value": "1"
       }
     ],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "secretOptions": null,
-      "options": {
-        "awslogs-create-group": "true",
-        "awslogs-group": "/ecs/envoy",
-        "awslogs-region": "ap-northeast-1",
-        "awslogs-stream-prefix": "ecs"
-      }
-    },
     "healthCheck": {
       "retries": 3,
       "command": [

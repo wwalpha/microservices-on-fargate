@@ -1,8 +1,9 @@
 [
   {
-    "name": "onecloud-fargate-frontend",
-    "image": "708988062417.dkr.ecr.ap-northeast-1.amazonaws.com/onecloud-fargate-frontend:d67bfd38ed453788116030f5fea095ebae17f0de",
+    "name": "${container_name}",
+    "image": "${container_image}",
     "essential": true,
+    "cpu": 0,
     "environment": [],
     "mountPoints": [],
     "volumesFrom": [],
@@ -16,8 +17,8 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "/ecs/onecloud-fargate-frontend",
-        "awslogs-region": "ap-northeast-1",
+        "awslogs-group": "/ecs/${container_name}",
+        "awslogs-region": "${aws_region}",
         "awslogs-stream-prefix": "ecs"
       }
     }

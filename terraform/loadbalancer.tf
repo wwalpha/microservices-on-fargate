@@ -65,39 +65,3 @@ resource "aws_lb_listener_rule" "backend_api" {
     target_group_arn = aws_lb_target_group.backend_api.arn
   }
 }
-
-# ----------------------------------------------------------------------------------------------
-# Application Load Balancer - private
-# ----------------------------------------------------------------------------------------------
-# resource "aws_lb" "private" {
-#   name               = "onecloud-fargate-private"
-#   internal           = true
-#   load_balancer_type = "application"
-#   security_groups    = var.vpc_security_groups
-#   subnets            = var.public_subnet_ids
-# }
-
-# ----------------------------------------------------------------------------------------------
-# Load Balancer Listener - Private
-# ----------------------------------------------------------------------------------------------
-# resource "aws_lb_listener" "private" {
-#   load_balancer_arn = aws_lb.private.arn
-#   port              = "8090"
-#   protocol          = "HTTP"
-
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_auth.arn
-#   }
-# }
-
-# ----------------------------------------------------------------------------------------------
-# Load Balancer Target Group - Backend Auth
-# ----------------------------------------------------------------------------------------------
-# resource "aws_lb_target_group" "backend_auth" {
-#   name        = "onecloud-fargate-backend-auth"
-#   port        = 8090
-#   protocol    = "HTTP"
-#   target_type = "ip"
-#   vpc_id      = var.vpc_id
-# }
