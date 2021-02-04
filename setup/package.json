@@ -1,0 +1,11 @@
+{
+  "name": "setup",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "terraform apply -auto-approve",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
