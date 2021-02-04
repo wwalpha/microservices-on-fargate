@@ -2,18 +2,26 @@
 
 ## Architecture
 
-![img](./docs/architecture3.png)
+![img](./docs/architecture2.png)
 
 ## Demonstration Points
 
 1. Container pull image through NAT Gateway
-2. ECS service to service communication with internal load balancing
-3. ECS service to service communication with service discovery + cloud map + route53
-4. Use application load balancer for balancing
-5. Use service discovery service for balancing
-6. Application load balancer rule base routing
-7. SSL Certificate attach to load balancer
-8. [Enabled XRay](./docs/enable_xray.md) for trace
+2. ECS service to service communication with service discovery + cloud map + route53
+3. Use application load balancer for balancing
+4. Use service discovery service for balancing
+5. Application load balancer rule base routing
+6. SSL Certificate attach to load balancer
+7. [Enabled XRay](./docs/enable_xray.md) for trace
+8. Enable App Mesh as circuit breaker
+
+## Service Map
+
+![img](./docs/service_map.png)
+
+## How it works - AWS App Mesh
+
+![img](./docs/mesh.png)
 
 ## Infrastructure Services
 
