@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "terraform apply -auto-approve"
+    "start": "terraform apply -auto-approve",
+    "graph": "terraform graph | dot -Tpng > graph.png"
   },
   "author": "",
   "license": "ISC"
