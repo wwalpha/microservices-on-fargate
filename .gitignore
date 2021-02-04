@@ -3,3 +3,4 @@ build
 .terraform
 *.lock
 .secrets
+*lock.hcl
