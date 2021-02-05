@@ -40,8 +40,7 @@
 | Application Load Balancer | Distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones                                           |
 | Target Group              | Used to route requests to one or more registered targets                                                                                                          |
 | Cloud Map                 | Cloud resource discovery service                                                                                                                                  |
-
-|Amazon Route 53 |Highly available and scalable cloud Domain Name System (DNS) web service
+| Amazon Route 53           | Highly available and scalable cloud Domain Name System (DNS) web service                                                                                          |
 
 ## Terraform Graph
 
